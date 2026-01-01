@@ -11,7 +11,7 @@ The patient-facing mobile application for the DocGo platform, delivering quality
 
 -   **User Friendly**: Clean and intuitive UI built with Flutter.
 -   **Appointment Booking**: Easy scheduling with doctors.
--   **Video Consultations**: Integrated high-quality video calls.
+-   **Chat Consultations**: Realtime chatting.
 -   **Health Tracking**: Monitor vital statistics.
 -   **Push Notifications**: Timely reminders for appointments and medications.
 
@@ -21,7 +21,6 @@ The patient-facing mobile application for the DocGo platform, delivering quality
 -   **State Management**: Provider
 -   **Navigation**: GoRouter
 -   **Local Storage**: Shared Preferences
--   **Maps**: Google Maps Flutter
 
 ## 🚀 Getting Started
 
@@ -31,7 +30,7 @@ The patient-facing mobile application for the DocGo platform, delivering quality
 -   Android Studio (for Android)
 -   Xcode (for iOS - macOS only)
 
-### Installation
+    ### Installation
 
 1.  **Enter directory**
     ```bash

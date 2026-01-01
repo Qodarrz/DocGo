@@ -110,17 +110,12 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: colors.onBackground,
-          ),
+          icon: Icon(Icons.arrow_back_ios, color: colors.onBackground),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Detail Dokter',
-          style: textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -176,9 +171,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
 
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -186,10 +179,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.access_time,
-                  color: colors.primary,
-                ),
+                Icon(Icons.access_time, color: colors.primary),
                 const SizedBox(width: 8),
                 Text(
                   'Konsultasi Aktif',
@@ -230,11 +220,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
             if (activeConsult['chatRoom']?['id'] != null)
               Row(
                 children: [
-                  Icon(
-                    Icons.chat,
-                    color: colors.primary,
-                    size: 16,
-                  ),
+                  Icon(Icons.chat, color: colors.primary, size: 16),
                   const SizedBox(width: 8),
                   Text(
                     'Chat Room: ${activeConsult['chatRoom']['id']}',
@@ -245,7 +231,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
             const SizedBox(height: 8),
             if (now.isBefore(scheduledAt))
               Text(
-                'Chat akan tersedia dalam ${_formatDuration(scheduledAt.difference(now))}',
+                'Dokter akan tersedia dalam ${_formatDuration(scheduledAt.difference(now))}',
                 style: TextStyle(
                   color: colors.primary,
                   fontWeight: FontWeight.w500,
@@ -321,19 +307,8 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
     final activeConsult = _activeConsultation;
     final now = DateTime.now();
 
-    if (activeConsult != null) {
-      final scheduledAt = DateTime.parse(
-        activeConsult['scheduledAt'].toString(),
-      );
-      final canStartTime = scheduledAt.subtract(const Duration(minutes: 5));
-      final duration = activeConsult['durationMinutes'] ?? 30;
-      final endTime = scheduledAt.add(Duration(minutes: duration));
-
-      if (now.isAfter(canStartTime) && now.isBefore(endTime)) {
-        return ActionButton.chat(
-          onPressed: () => _navigateToChat(activeConsult),
-        );
-      }
+    if (activeConsult != null && activeConsult['chatRoom']?['id'] != null) {
+      return ActionButton.chat(onPressed: () => _navigateToChat(activeConsult));
     }
 
     // Cek apakah user sudah ada konsultasi hari ini dengan dokter lain
@@ -434,10 +409,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          Icons.date_range,
-                          color: colors.primary,
-                        ),
+                        icon: Icon(Icons.date_range, color: colors.primary),
                         onPressed: () => _selectDate(context, setState),
                       ),
                     ),
@@ -460,10 +432,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          Icons.schedule,
-                          color: colors.primary,
-                        ),
+                        icon: Icon(Icons.schedule, color: colors.primary),
                         onPressed: () => _selectTime(context, setState),
                       ),
                     ),
@@ -515,9 +484,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                style: TextButton.styleFrom(
-                  foregroundColor: colors.onSurface,
-                ),
+                style: TextButton.styleFrom(foregroundColor: colors.onSurface),
                 child: const Text('Batal'),
               ),
               ElevatedButton(
@@ -674,9 +641,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
         backgroundColor: colors.error,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -703,9 +668,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
           ),
           title: Text(
             'Konfirmasi Booking',
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -775,9 +738,7 @@ class _ConsultationDetailScreenState extends State<ConsultationDetailScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              style: TextButton.styleFrom(
-                foregroundColor: colors.onSurface,
-              ),
+              style: TextButton.styleFrom(foregroundColor: colors.onSurface),
               child: const Text('Batal'),
             ),
             ElevatedButton(

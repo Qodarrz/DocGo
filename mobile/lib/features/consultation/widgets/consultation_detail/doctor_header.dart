@@ -227,7 +227,7 @@ class DoctorHeaderElegant extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Lokasi Praktek',
+                            'Kode Dokter',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurface.withOpacity(0.7),
                               fontWeight: FontWeight.w500,

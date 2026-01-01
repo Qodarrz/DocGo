@@ -4,15 +4,10 @@ class ActionButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isChat;
 
-  const ActionButton.chat({
-    super.key,
-    required this.onPressed,
-  }) : isChat = true;
+  const ActionButton.chat({super.key, required this.onPressed}) : isChat = true;
 
-  const ActionButton.book({
-    super.key,
-    required this.onPressed,
-  }) : isChat = false;
+  const ActionButton.book({super.key, required this.onPressed})
+    : isChat = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +16,7 @@ class ActionButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isChat ? Colors.green : Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -37,10 +32,7 @@ class ActionButton extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               isChat ? 'Mulai Chat' : 'Booking Konsultasi',
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
           ],
         ),

@@ -7,7 +7,6 @@ cron.schedule("* * * * *", async () => {
   try {
     const now = new Date();
 
-    // 1. Tangani PENDING
     const pendingConsultations = await prisma.consultation.findMany({
       where: { status: "PENDING" },
     });
@@ -18,7 +17,6 @@ cron.schedule("* * * * *", async () => {
       end.setMinutes(end.getMinutes() + consult.duration);
 
       if (now >= end) {
-        // Konsultasi sudah lewat tanpa dimulai → CANCELLED
         await prisma.consultation.update({
           where: { id: consult.id },
           data: { status: "CANCELLED" },

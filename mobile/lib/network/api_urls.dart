@@ -1,9 +1,9 @@
 class ApiUrls {
   // Base URL
-  // static const String baseUrl = 'http://192.168.1.7:3000';
+  static const String baseUrl = 'http://192.168.1.7:3000';
   // static const String baseUrl = 'http://10.113.123.15:3000';
   // static const String baseUrl = 'http://10.228.112.15:3000';
-  static const String baseUrl = 'https://backendtraspac-production.up.railway.app';
+  // static const String baseUrl = 'https://backendtraspac-production.up.railway.app';
 
   // Auth endpoints
   static const String login = 'auth/login';

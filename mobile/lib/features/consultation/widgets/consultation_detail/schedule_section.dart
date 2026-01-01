@@ -531,13 +531,6 @@ class _ScheduleSectionState extends State<ScheduleSection> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        startTime,
-                        style: textTheme.labelLarge?.copyWith(
-                          color: statusColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
                         '${duration}m',
                         style: textTheme.labelSmall?.copyWith(
                           color: statusColor.withOpacity(0.7),
