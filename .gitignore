@@ -22,6 +22,8 @@ github.txt
 /backend/node_modules/
 /backend/dist/
 /backend/build/
+/backend/prisma/migrations/
+/backend/prisma/seed/
 /backend/.env
 /backend/.DS_Store
 /backend/npm-debug.log*
