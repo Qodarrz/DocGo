@@ -1,16 +1,57 @@
-# l
+# Mobile - DocGo
 
-A new Flutter project.
+This is the mobile application for DocGo, built with Flutter.
 
-## Getting Started
+## Tech Stack
 
-This project is a starting point for a Flutter application.
+-   **Framework:** Flutter (SDK ^3.10.0)
+-   **Navigation:** GoRouter
+-   **State Management:** Provider
+-   **Networking:** Http, Socket.io Client
+-   **Notifications:** Firebase Messaging, Flutter Local Notifications
+-   **WebView:** Flutter InAppWebView
+-   **Video:** Youtube Player Flutter
+-   **Background Processing:** Workmanager, Android Alarm Manager Plus
 
-A few resources to get you started if this is your first Flutter project:
+## Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+-   Flutter SDK
+-   Android Studio / Xcode (for simulators/emulators)
+-   CocoaPods (for iOS)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+
+1.  Navigate to the mobile folder:
+    ```bash
+    cd mobile
+    ```
+
+2.  Get dependencies:
+    ```bash
+    flutter pub get
+    ```
+
+## Running the Application
+
+### Development
+
+Run on a connected device or emulator:
+
+```bash
+flutter run
+```
+
+### Build
+
+To build an APK:
+
+```bash
+flutter build apk
+```
+
+## Folder Structure
+
+-   `lib/`: Main Dart code
+-   `assets/`: Images, icons, and fonts
+-   `android/`: Android native code
+-   `ios/`: iOS native code

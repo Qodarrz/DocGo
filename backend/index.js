@@ -72,6 +72,14 @@ app.use("/notif", NotificationRoutes);
 
 app.get("/", (req, res) => res.json({ status: "OK" }));
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Terjadi kesalahan pada server",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
+});
+
 startReminderWorker();
 
 setInterval(() => scheduleReminders().catch(console.error), 60 * 1000);
