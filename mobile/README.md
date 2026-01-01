@@ -1,57 +1,89 @@
-# Mobile - DocGo
+# 📱 DocGo Mobile App
 
-This is the mobile application for DocGo, built with Flutter.
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![iOS](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white)
 
-## Tech Stack
+The patient-facing mobile application for the DocGo platform, delivering quality healthcare to your fingertips.
 
--   **Framework:** Flutter (SDK ^3.10.0)
--   **Navigation:** GoRouter
--   **State Management:** Provider
--   **Networking:** Http, Socket.io Client
--   **Notifications:** Firebase Messaging, Flutter Local Notifications
--   **WebView:** Flutter InAppWebView
--   **Video:** Youtube Player Flutter
--   **Background Processing:** Workmanager, Android Alarm Manager Plus
+## 📱 Features
 
-## Prerequisites
+-   **User Friendly**: Clean and intuitive UI built with Flutter.
+-   **Appointment Booking**: Easy scheduling with doctors.
+-   **Video Consultations**: Integrated high-quality video calls.
+-   **Health Tracking**: Monitor vital statistics.
+-   **Push Notifications**: Timely reminders for appointments and medications.
+
+## 🛠️ Tech Stack
+
+-   **Framework**: Flutter (SDK ^3.10.0)
+-   **State Management**: Provider
+-   **Navigation**: GoRouter
+-   **Local Storage**: Shared Preferences
+-   **Maps**: Google Maps Flutter
+
+## 🚀 Getting Started
+
+### Prerequisites
 
 -   Flutter SDK
--   Android Studio / Xcode (for simulators/emulators)
--   CocoaPods (for iOS)
+-   Android Studio (for Android)
+-   Xcode (for iOS - macOS only)
 
-## Installation
+### Installation
 
-1.  Navigate to the mobile folder:
+1.  **Enter directory**
     ```bash
     cd mobile
     ```
 
-2.  Get dependencies:
+2.  **Get Packages**
     ```bash
     flutter pub get
     ```
 
-## Running the Application
+3.  **Run Application**
 
-### Development
+    *Debug Mode:*
+    ```bash
+    flutter run
+    ```
 
-Run on a connected device or emulator:
+    *Profile Mode (Performance Testing):*
+    ```bash
+    flutter run --profile
+    ```
 
+### 📦 Building for Production
+
+**Android (APK)**
 ```bash
-flutter run
+flutter build apk --release
 ```
 
-### Build
-
-To build an APK:
-
+**Android (App Bundle)**
 ```bash
-flutter build apk
+flutter build appbundle --release
 ```
 
-## Folder Structure
+**iOS (IPA)**
+```bash
+flutter build ipa --release
+```
 
--   `lib/`: Main Dart code
--   `assets/`: Images, icons, and fonts
--   `android/`: Android native code
--   `ios/`: iOS native code
+## 📂 Project Structure
+
+```
+mobile/
+├── lib/
+│   ├── features/       # Feature-first architecture
+│   ├── core/           # Core utilities & configs
+│   └── shared/         # Shared widgets & models
+├── assets/             # Images, Icons, Fonts
+├── android/            # Native Android code
+└── ios/                # Native iOS code
+```
+
+---
+*Back to [Root Documentation](../README.md)*

@@ -1,67 +1,73 @@
-# Frontend - DocGo
+# 🌐 DocGo Web Dashboard
 
-This is the frontend for the DocGo application, built with Next.js 16 and Tailwind CSS.
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Radix UI](https://img.shields.io/badge/radix%20ui-161618.svg?style=for-the-badge&logo=radix-ui&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
-## Tech Stack
+The comprehensive web interface for DocGo Administrators and Doctors. Built with the latest Next.js 16 App Router.
 
--   **Framework:** Next.js (App Router)
--   **Language:** TypeScript
--   **Styling:** Tailwind CSS 4, Tailwind Merge, CLSX
--   **UI Components:** Radix UI (primitives), Lucide React (icons), Sonner/Toastify (notifications)
--   **Charts:** Recharts
--   **Real-time:** Socket.io Client
--   **Authentication:** JOSE, JWT
+## 🌟 Features
 
-## Prerequisites
+-   **admin/dashboard**: Complete analytics overview.
+-   **doctor/schedule**: Interactive calendar for appointment management.
+-   **Real-time Updates**: Live notifications and chat.
+-   **Responsive Design**: Optimized for Desktop and Tablets.
+-   **Dark Mode**: Native support via `next-themes`.
 
--   Node.js (Active LTS version recommended)
--   npm or yarn
+## 🛠️ Tech Stack
 
-## Installation
+-   **Framework**: Next.js 16 (App Router)
+-   **Styling**: Tailwind CSS 4
+-   **Icons**: Lucide React
+-   **Charts**: Recharts
+-   **Forms**: React Hook Form + Zod
 
-1.  Navigate to the frontend folder:
+## 🚀 Getting Started
+
+### Prerequisites
+
+-   Node.js (v18+)
+
+### Installation
+
+1.  **Enter directory**
     ```bash
     cd frontend
     ```
 
-2.  Install dependencies:
+2.  **Install Dependencies**
     ```bash
     npm install
     ```
 
-3.  Set up environment variables:
-    -   Create a `.env.local` or `.env` file.
-    -   Ensure backend URLs and other public variables are set.
+3.  **Configure Environment**
+    Create `.env.local`:
+    ```env
+    NEXT_PUBLIC_API_URL="http://localhost:4000"
+    ```
 
-## Running the Application
-
-### Development Server
-
-Run the development server:
+### 🏃‍♂️ Running the App
 
 ```bash
+# Start Development Server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-### Build and Production
+## 📂 Project Structure
 
-To build the application for production:
-
-```bash
-npm run build
+```
+frontend/
+├── app/            # App Router Pages & Layouts
+│   ├── (auth)/     # Authentication Routes
+│   ├── admin/      # Admin Dashboard
+│   └── doctor/     # Doctor Dashboard
+├── components/     # Reusable UI Components
+├── lib/            # Utilities & Helpers
+└── public/         # Static Assets
 ```
 
-To start the production server:
-
-```bash
-npm start
-```
-
-## Folder Structure
-
--   `app/`: Next.js App Router pages and layouts
--   `components/`: Reusable UI components
--   `lib/`: Utility functions and library configurations
--   `client/`: API clients or specific frontend logic
+---
+*Back to [Root Documentation](../README.md)*
