@@ -92,7 +92,7 @@ class ProfileApi {
         if (medications != null) 'medications': medications,
       };
 
-      final response = await ApiClient.post(
+      final response = await ApiClient.patch(
         ApiUrls.upsertMedicalProfile,
         body,
       );

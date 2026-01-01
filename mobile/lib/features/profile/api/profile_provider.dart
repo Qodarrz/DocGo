@@ -144,6 +144,8 @@ class ProfileProvider extends ChangeNotifier {
       medications: newMedications,
     );
 
+    print('hasil $result');
+
     isLoading = false;
 
     if (result['success'] == true) {
