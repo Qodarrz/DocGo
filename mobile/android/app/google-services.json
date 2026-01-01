@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "620637758587",
+    "project_id": "ecomapp-5181e",
+    "storage_bucket": "ecomapp-5181e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620637758587:android:f82dff7347c3c567c0eede",
+        "android_client_info": {
+          "package_name": "com.neowest.docgo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZO0ILEoz_lmp2A3gMGY0IwLjJ4qbUorc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

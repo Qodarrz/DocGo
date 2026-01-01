@@ -1,0 +1,343 @@
+// schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ====================
+// ENUMS
+// ====================
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum HealthMetricType {
+  BLOOD_PRESSURE
+  BLOOD_SUGAR
+  HEART_RATE
+  WEIGHT
+  SLEEP
+}
+
+enum ConsultationType {
+  GENERAL
+  SPECIALIST
+  PSYCHOLOGY
+}
+
+enum ConsultationStatus {
+  PENDING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  MEDICATION
+  HEALTH_ALERT
+  CONSULTATION
+  SYSTEM
+  REMINDER
+}
+
+enum TriageLevel {
+  LOW
+  MEDIUM
+  HIGH
+  EMERGENCY
+}
+
+enum RiskLevel {
+  LOW
+  MODERATE
+  HIGH
+}
+
+enum FollowUpTiming {
+  ASAP
+  WITHIN_24H
+  WITHIN_48H
+  WITHIN_1WEEK
+  MONITOR_ONLY
+}
+
+// ====================
+// USER & PROFILE
+// ====================
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  phone         String?  @unique
+  fullName      String?
+  dateOfBirth   DateTime?
+  gender        Gender?
+  
+  // Authentication
+  passwordHash  String?
+  emailVerified Boolean  @default(false)
+  otpHash       String?
+  otpExpiresAt  DateTime?
+  resetTokenHash       String?
+  resetTokenExpiresAt  DateTime?
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  medicalProfile    MedicalProfile?
+  healthMetrics     HealthMetric[]
+  medications       Medication[]
+  consultations     Consultation[]
+  notifications     Notification[]
+  emergencyContacts EmergencyContact[]
+  symptomChecks     SymptomCheck[]
+  mealPlans         MealPlan[]
+  
+  // Indexes
+  @@index([email])
+  @@index([phone])
+}
+
+// ====================
+// MEDICAL PROFILE
+// ====================
+model MedicalProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  
+  // Basic Info
+  heightCm    Float?
+  weightKg    Float?
+  bloodType   String?
+  
+  // Medical History
+  conditions  Json?  // Array of chronic conditions
+  allergies   Json?  // Array of allergies
+  medications Json?  // Array of current medications
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+// ====================
+// HEALTH TRACKING
+// ====================
+model HealthMetric {
+  id         String           @id @default(uuid())
+  userId     String
+  type       HealthMetricType
+  
+  // Values
+  value      Float
+  valueAlt   Float?  // For BP: systolic/diastolic
+  unit       String  @default("") // e.g., "mg/dL", "mmHg"
+  notes      String?
+  
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
+  user       User     @relation(fields: [userId], references: [id])
+  
+  @@index([userId, type, recordedAt])
+  @@index([userId, createdAt])
+}
+
+// ====================
+// SMART DIAGNOSIS - ENHANCED!
+// ====================
+model SymptomCheck {
+  id            String       @id @default(uuid())
+  userId        String
+  
+  // User Input
+  complaint     String       // Original text from user
+  symptoms      Json         // Extracted symptoms array
+  durationDays  Int?         // Duration in days
+  severityHint  String?      // mild/moderate/severe
+  
+  // AI Analysis Results - ALL SAVED TO DB!
+  triageLevel   TriageLevel  @default(LOW)
+  riskLevel     RiskLevel    @default(LOW)
+  confidence    Float?       // AI confidence score 0-1
+  
+  // Detailed Analysis
+  likelyConditions Json      // Array of {condition, probability}
+  immediateAction  String?
+  recommendedSpecialist Json? // Array of specialist types
+  warningSigns     Json?     // Array of warning signs
+  homeCareAdvice   Json?     // Array of advice
+  followUpTiming   FollowUpTiming @default(MONITOR_ONLY)
+  shouldSeeDoctor  Boolean   @default(false)
+  
+  // Metadata
+  aiModelUsed   String?      @default("gemini-2.5-flash")
+  
+  // Timestamps
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Relations
+  user          User         @relation(fields: [userId], references: [id])
+  
+  // Indexes for fast queries
+  @@index([userId, createdAt])
+  @@index([triageLevel])
+  @@index([riskLevel])
+  @@index([shouldSeeDoctor])
+}
+
+// ====================
+// MEDICATION MANAGEMENT
+// ====================
+model Medication {
+  id          String   @id @default(uuid())
+  userId      String
+  
+  // Medication Details
+  name        String
+  dosage      String     // e.g., "500mg"
+  frequency   String     // e.g., "2x daily"
+  schedule    Json?      // {times: ["08:00", "20:00"], days: [1,2,3,4,5,6,7]}
+  instruction String?    // e.g., "Take after meals"
+  
+  // Timing
+  startDate   DateTime
+  endDate     DateTime?
+  
+  // Status
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [userId], references: [id])
+  logs        MedicationLog[]
+  
+  @@index([userId, isActive])
+  @@index([userId, startDate])
+}
+
+model MedicationLog {
+  id           String   @id @default(uuid())
+  medicationId String
+  takenAt      DateTime @default(now())
+  status       String   @default("TAKEN") // TAKEN, MISSED, SKIPPED
+  notes        String?
+  
+  medication   Medication @relation(fields: [medicationId], references: [id])
+  
+  @@index([medicationId, takenAt])
+}
+
+// ====================
+// CONSULTATION
+// ====================
+model Consultation {
+  id         String              @id @default(uuid())
+  userId     String
+  
+  // Consultation Details
+  doctorName String
+  type       ConsultationType
+  status     ConsultationStatus @default(PENDING)
+  notes      String?
+  
+  // Timing
+  scheduledAt DateTime?  // For future appointments
+  duration    Int?       // In minutes
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  user       User @relation(fields: [userId], references: [id])
+  
+  @@index([userId, status])
+  @@index([userId, scheduledAt])
+}
+
+// ====================
+// NUTRITION
+// ====================
+model MealPlan {
+  id        String   @id @default(uuid())
+  userId    String
+  date      DateTime @default(now())
+  type      String   @default("DAILY") // DAILY, WEEKLY, SPECIAL
+  notes     String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      User @relation(fields: [userId], references: [id])
+  meals     MealItem[]
+  
+  @@index([userId, date])
+}
+
+model MealItem {
+  id         String   @id @default(uuid())
+  mealPlanId String
+  name       String
+  calories   Float
+  carbs      Float?
+  protein    Float?
+  fat        Float?
+  time       String?  // e.g., "08:00" for breakfast
+  
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id])
+}
+
+// ====================
+// EMERGENCY
+// ====================
+model EmergencyContact {
+  id       String   @id @default(uuid())
+  userId   String
+  name     String
+  phone    String
+  relation String?  // e.g., "Spouse", "Parent"
+  isPrimary Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+  
+  user     User     @relation(fields: [userId], references: [id])
+  
+  @@index([userId, isPrimary])
+}
+
+// ====================
+// NOTIFICATION
+// ====================
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  
+  // Content
+  title     String
+  message   String
+  data      Json?           // Additional data for deep linking
+  
+  // Status
+  isRead    Boolean          @default(false)
+  isActionable Boolean       @default(false)
+  actionTaken Boolean        @default(false)
+  
+  // Timing
+  scheduledAt DateTime?      // For future notifications
+  createdAt   DateTime       @default(now())
+  readAt      DateTime?
+  
+  user       User            @relation(fields: [userId], references: [id])
+  
+  @@index([userId, isRead, createdAt])
+  @@index([userId, scheduledAt])
+}

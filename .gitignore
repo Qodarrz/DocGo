@@ -1,0 +1,73 @@
+# ===============================
+#  GLOBAL IGNORE
+# ===============================
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+*.env
+
+# Node modules
+node_modules/
+
+# ===============================
+#  BACKEND (Express)
+# ===============================
+/backend/node_modules/
+/backend/dist/
+/backend/build/
+/backend/.env
+/backend/.DS_Store
+/backend/npm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+/backend/pnpm-debug.log*
+/backend/.idea/
+/backend/.vscode/
+
+# Prisma generated files (optional)
+# /backend/prisma/migrations/
+/backend/prisma/dev.db
+
+# ===============================
+#  FRONTEND (Next.js)
+/frontend/node_modules/
+/frontend/.next/
+/frontend/out/
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/.DS_Store
+/frontend/.vercel/
+/frontend/.idea/
+/frontend/.vscode/
+
+# ===============================
+#  MOBILE (Flutter)
+/mobile/.dart_tool/
+/mobile/build/
+/mobile/.packages
+/mobile/.flutter-plugins
+/mobile/.flutter-plugins-dependencies
+/mobile/pubspec.lock
+/mobile/.idea/
+/mobile/.vscode/
+/mobile/.DS_Store
+
+# Android specific
+/mobile/android/.gradle/
+/mobile/android/app/build/
+/mobile/build/
+/mobile/android/local.properties
+
+# iOS specific
+/mobile/ios/Pods/
+/mobile/ios/Flutter/Flutter.framework
+/mobile/ios/Flutter/Flutter.podspec
+/mobile/ios/Flutter/Generated.xcconfig
+/mobile/ios/Runner/GeneratedPluginRegistrant.*

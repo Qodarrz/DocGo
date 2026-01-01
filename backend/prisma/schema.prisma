@@ -1,0 +1,492 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum SeverityHint {
+  MILD
+  MODERATE
+  SEVERE
+}
+
+enum HealthMetricType {
+  BLOOD_PRESSURE
+  BLOOD_SUGAR
+  HEART_RATE
+  WEIGHT
+  SLEEP
+}
+
+enum ConsultationType {
+  GENERAL
+  SPECIALIST
+  PSYCHOLOGY
+}
+
+enum ConsultationStatus {
+  PENDING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  MEDICATION
+  HEALTH_ALERT
+  CONSULTATION
+  SYSTEM
+  REMINDER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+}
+
+enum MessageSender {
+  USER
+  DOCTOR
+  SYSTEM
+}
+
+enum TriageLevel {
+  LOW
+  MEDIUM
+  HIGH
+  EMERGENCY
+}
+
+enum RiskLevel {
+  LOW
+  MODERATE
+  HIGH
+}
+
+enum FollowUpTiming {
+  ASAP
+  WITHIN_24H
+  WITHIN_48H
+  WITHIN_1WEEK
+  MONITOR_ONLY
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  DOCTOR
+}
+
+model User {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  phone       String?   @unique
+  fullName    String?
+  dateOfBirth DateTime?
+  gender      Gender?
+  role        UserRole  @default(USER)
+  userProfile String?   @default("https://az4khupscvsqksn6.public.blob.vercel-storage.com/fotodefault.png")
+
+  // Auth
+  passwordHash        String?
+  emailVerified       Boolean   @default(false)
+  otpHash             String?
+  otpExpiresAt        DateTime?
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  medicalProfile    MedicalProfile?
+  userDiseases      UserDisease[]
+  healthMetrics     HealthMetric[]
+  medications       Medication[]
+  consultations     Consultation[]
+  notifications     Notification[]
+  emergencyContacts EmergencyContact[]
+  symptomChecks     SymptomCheck[]
+  mealPlans         MealPlan[]
+  deviceTokens      DeviceToken[]
+  doctor            Doctor?
+  chatRooms         ChatRoom[]
+  reminders         Reminder[]
+
+  @@index([email])
+  @@index([phone])
+}
+
+model MedicalProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  heightCm  Float?
+  weightKg  Float?
+  bloodType String?
+
+  allergies   Json?
+  medications Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Disease {
+  id          String  @id @default(uuid())
+  name        String
+  isChronic   Boolean @default(false)
+  description String?
+
+  userDiseases  UserDisease[]
+  symptomChecks SymptomCheck[]
+}
+
+model UserDisease {
+  id        String @id @default(uuid())
+  userId    String
+  diseaseId String
+
+  status      String    @default("ACTIVE") // ACTIVE | RESOLVED
+  diagnosedAt DateTime?
+
+  user    User    @relation(fields: [userId], references: [id])
+  disease Disease @relation(fields: [diseaseId], references: [id])
+
+  @@unique([userId, diseaseId])
+  @@index([userId, status])
+}
+
+model HealthMetric {
+  id     String           @id @default(uuid())
+  userId String
+  type   HealthMetricType
+
+  value    Float
+  valueAlt Float?
+  unit     String  @default("")
+  notes    String?
+
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, type, recordedAt])
+}
+
+model Doctor {
+  id     String @id @default(uuid())  
+  userId String @unique
+  image  String @default("https://az4khupscvsqksn6.public.blob.vercel-storage.com/defaultdoctor.png")
+
+  specialization String
+  licenseNumber  String?
+  experienceYear Int?
+  bio            String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id])
+  consultations Consultation[]
+  chatRooms     ChatRoom[]
+
+  @@index([specialization])
+}
+
+model SymptomCheck {
+  id     String @id @default(uuid())
+  userId String
+
+  complaint    String
+  symptoms     Json
+  durationDays Int?
+  severityHint SeverityHint?
+
+  // AI Analysis
+  triageLevel TriageLevel @default(LOW)
+  riskLevel   RiskLevel   @default(LOW)
+  confidence  Float?
+
+  likelyConditions      Json?
+  immediateAction       String?
+  recommendedSpecialist Json?
+  warningSigns          Json?
+  homeCareAdvice        Json?
+  followUpTiming        FollowUpTiming @default(MONITOR_ONLY)
+  shouldSeeDoctor       Boolean        @default(false)
+
+  relatedDiseaseId String?
+  relatedDisease   Disease? @relation(fields: [relatedDiseaseId], references: [id])
+
+  aiModelUsed String? @default("gemini-2.5-flash")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([triageLevel])
+  @@index([riskLevel])
+}
+
+model AppRelease {
+  id String @id @default(uuid())
+
+  appName String @default("HealthApp")
+  platform String @default("ANDROID") // ANDROID | IOS (future-proof)
+  
+  versionName String // contoh: "1.2.0"
+  versionCode Int    // contoh: 12 (wajib naik setiap rilis)
+
+  downloadUrl String // link download APK
+  releaseNotes String?
+
+  isForceUpdate Boolean @default(false)
+  isActive      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([platform, isActive])
+  @@unique([platform, versionCode])
+}
+
+
+model DeviceToken {
+  id        String   @id @default(uuid())
+  userId    String
+  fcmToken  String   @unique
+  platform  String?
+  createdAt DateTime @default(now())
+
+  User User @relation(fields: [userId], references: [id])
+}
+
+model Medication {
+  id     String @id @default(uuid())
+  userId String
+
+  name        String
+  dosage      String
+  frequency   String
+  schedule    Json?
+  instruction String?
+
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User            @relation(fields: [userId], references: [id])
+  logs MedicationLog[]
+
+  @@index([userId, isActive])
+}
+
+model MedicationLog {
+  id           String   @id @default(uuid())
+  medicationId String
+  takenAt      DateTime @default(now())
+  status       String   @default("TAKEN")
+  notes        String?
+
+  medication Medication @relation(fields: [medicationId], references: [id])
+
+  @@index([medicationId, takenAt])
+}
+
+model Consultation {
+  id       String @id @default(uuid())
+  userId   String
+  doctorId String
+
+  type   ConsultationType
+  status ConsultationStatus @default(PENDING)
+  notes  String?  
+
+  scheduledAt DateTime?
+  duration    Int?
+  endAt       DateTime?   // Field baru untuk menyimpan waktu selesai
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+
+  chatRoom ChatRoom?
+
+  @@index([userId, status])
+  @@index([doctorId, status])
+}
+
+
+model ChatRoom {
+  id             String @id @default(uuid())
+  consultationId String @unique
+
+  userId   String
+  doctorId String
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  consultation Consultation @relation(fields: [consultationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  doctor       Doctor       @relation(fields: [doctorId], references: [id])
+
+  messages Message[]
+}
+
+model Message {
+  id         String @id @default(uuid())
+  chatRoomId String
+
+  senderType MessageSender
+  senderId   String
+
+  type    MessageType @default(TEXT)
+  content String
+  meta    Json?
+
+  isRead Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id])
+
+  @@index([chatRoomId, createdAt])
+}
+
+// ====================
+// NUTRITION
+// ====================
+model MealPlan {
+  id     String   @id @default(uuid())
+  userId String
+  date   DateTime @default(now())
+  type   String   @default("DAILY")
+  notes  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id])
+  meals MealItem[]
+
+  @@index([userId, date])
+}
+
+model MealItem {
+  id         String  @id @default(uuid())
+  mealPlanId String
+  name       String
+  calories   Float
+  carbs      Float?
+  protein    Float?
+  fat        Float?
+  time       String?
+
+  mealPlan MealPlan @relation(fields: [mealPlanId], references: [id])
+}
+
+// ====================
+// EMERGENCY CONTACT
+// ====================
+model EmergencyContact {
+  id        String  @id @default(uuid())
+  userId    String
+  name      String
+  phone     String
+  relation  String?
+  isPrimary Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, isPrimary])
+}
+
+// ====================
+// NOTIFICATION
+// ====================
+model Notification {
+  id     String           @id @default(uuid())
+  userId String
+  type   NotificationType
+
+  title   String
+  message String
+  data    Json?
+
+  isRead Boolean   @default(false)
+  isSent Boolean   @default(false)
+  sentAt DateTime?
+
+  scheduledAt DateTime?
+  createdAt   DateTime  @default(now())
+  readAt      DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, isRead])
+  @@index([isSent, scheduledAt])
+}
+
+enum ReminderRepeatType {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+model Reminder {
+  id     String           @id @default(uuid())
+  userId String
+  type   NotificationType
+
+  title   String
+  message String
+  data    Json?
+
+  repeatType ReminderRepeatType @default(ONCE)
+  cron       String? // untuk CUSTOM (cron expression)
+
+  startAt   DateTime
+  endAt     DateTime?
+  lastRunAt DateTime?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, isActive])
+}
